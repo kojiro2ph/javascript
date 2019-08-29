@@ -1,0 +1,413 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<SCRIPT LANGUAGE="Javascript">
+<!--
+
+var fcbelt_y = 200;
+var slbelt_y = 400;
+var bkbelt_y = 87;
+var bkbelt_x = 42;
+var artotal = 0;
+var cu_artotal = 0;
+var mntotal = 101;
+var prtotal = 2;
+var cutotal = 3;
+var bktotal = 0;
+var rate_spd;
+var rate_spd2;
+var year = 1989;
+var ca_spd = 500;
+var x = 0;
+
+	
+function insert() {
+	ply_name = prompt('Please put your Company name.','JS-coorporation');
+	if (ply_name == null) {return true}
+	if (ply_name.length > 20) {alert('Too large');insert();return true;}
+	plyname.innerHTML = "<TT><B>" + ply_name + "</TT></B>";
+}
+
+function buy() {
+	argoods = document.f1.argoods.value;
+	if (argoods == "") {return true};
+	for (i=0;i<=argoods.length;i++) {
+		if ((argoods.charAt(i) == 1)||(argoods.charAt(i) == 2)
+			||(argoods.charAt(i) == 3)||(argoods.charAt(i) == 4)
+			||(argoods.charAt(i) == 5)||(argoods.charAt(i) == 6)
+			||(argoods.charAt(i) == 7)||(argoods.charAt(i) == 8)
+			||(argoods.charAt(i) == 9)||(argoods.charAt(i) == 0)) {
+			
+		} else {
+			alert('Invalid order');
+			return true;
+		} 
+	}
+	if (mntotal - eval(argoods + "*" + prtotal) < 0) {
+		alert('You have not enough money');
+		return true;
+	}
+	
+	fcbelt_move();
+}
+
+function sell() {
+	slgoods = document.f1.slgoods.value;
+	if (slgoods =="") {return true};
+	for (i=0;i<=slgoods.length;i++) {
+		if ((slgoods.charAt(i) == 1)||(slgoods.charAt(i) == 2)
+			||(slgoods.charAt(i) == 3)||(slgoods.charAt(i) == 4)
+			||(slgoods.charAt(i) == 5)||(slgoods.charAt(i) == 6)
+			||(slgoods.charAt(i) == 7)||(slgoods.charAt(i) == 8)
+			||(slgoods.charAt(i) == 9)||(slgoods.charAt(i) == 0)) {
+			
+		} else {
+			alert('Invalid order');
+			return true;
+		} 
+	}
+	if (slgoods > artotal) {
+		alert('Not enough');
+		return true;
+	}
+	slbelt_move();
+}
+	
+
+
+function fcbelt_move() {
+	
+	fcbelt_y += 5;
+	fcbelt.innerHTML = "|||";
+	fcbelt.style.pixelLeft = fcbelt_y;
+	
+	if (fcbelt_y == 295) {
+		clearTimeout(fcbelt_TID);
+		fcbelt.innerHTML = "";
+		fcbelt_y = 200;
+		document.f1.argoods.value = "";
+		fcexcel();	
+		return true;
+	}
+	
+	fcbelt_TID = setTimeout('fcbelt_move()',ca_spd);
+}
+
+
+function slbelt_move() {
+	
+	slbelt_y += 5;
+	slbelt.innerHTML = "|||";
+	slbelt.style.pixelLeft = slbelt_y;
+	
+	if (slbelt_y == 495) {
+		clearTimeout(slbelt_TID);
+		slbelt.innerHTML = "";
+		slbelt_y = 400;
+		document.f1.slgoods.value = "";
+		slexcel();
+		return true;
+	}
+	
+	slbelt_TID = setTimeout('slbelt_move()',50);
+}
+
+
+function fcexcel() {
+	artotal = eval(artotal + "+" + argoods);
+		arbd.innerHTML = "<TT><B>" + artotal + "</TT></B>";
+	mntotal = eval(mntotal + "-" + eval(argoods + "*" + prtotal));
+		mnbd.innerHTML = "<TT><B>$" + mntotal + "</TT></B>";
+}
+
+function slexcel() {
+	artotal = eval(artotal + "-" + slgoods);
+		arbd.innerHTML = "<TT><B>" + artotal + "</TT></B>";
+	mntotal = eval(mntotal + "+" + eval(slgoods + "*" + cutotal));
+		mnbd.innerHTML = "<TT><B>$" + mntotal + "</TT></B>";
+	cu_artotal = eval(cu_artotal + "+" + slgoods);
+		cu_arbd.innerHTML = "<TT><B>" + cu_artotal + "</TT></B>";
+}
+	
+	
+
+function fac_rate() {
+	prtotal = Math.ceil(Math.random()*10);
+	prbd.innerHTML = "<TT><B>$" + prtotal + "</TT></B>";
+	if (prtotal <= 3) {rate_spd = 4000};
+	else if ((prtotal > 3)&&(prtotal <= 7)) {rate_spd = 6000};
+	else if ((prtotal > 7)&&(prtotal < 11)) {rate_spd = 10000};
+	timer_fac_rate = setTimeout('fac_rate()',rate_spd);
+	dat_rate();
+	bank_rate();
+}
+
+function cst_rate() {
+	cutotal = Math.ceil(Math.random()*10);
+	cubd.innerHTML = "<TT><B>$" + cutotal + "</TT></B>";
+	if (cutotal <= 3) {rate2_spd = 10000};
+	else if ((cutotal > 3)&&(cutotal <= 7)) {rate2_spd = 6000};
+	else if ((cutotal > 7)&&(cutotal < 11)) {rate2_spd = 4000};
+	timer_cst_rate = setTimeout('cst_rate()',rate2_spd);
+}
+	
+
+function dat_rate() {
+	if (x == 11) {x=0};
+	dttotal = new Array();
+	dttotal[0] = "Junuary";dttotal[1] = "Febuary";dttotal[2] = "March";dttotal[3] = "April";
+	dttotal[4] = "May";dttotal[5] = "June";dttotal[6] = "July";dttotal[7] = "August";
+	dttotal[8] = "September";dttotal[9] = "October";dttotal[10] = "November";dttotal[11] = "December";
+	dtbd.innerHTML = "<TT><B>Month: " + dttotal[x] + "</B></TT>";
+	if (x == 0) {
+	year++
+	yrbd.innerHTML = "<TT><B>Year: " + year + "</B></TT>";
+	}
+	x++
+	if (mntotal < 0) {alert('Game over');Clear();};
+}
+
+function electric() {
+	mntotal--;
+		mnbd.innerHTML = "<TT><B>$" + mntotal + "</TT></B>";
+	timer_elec = setTimeout('electric()',5000);
+}
+
+function bank_rate() {
+	bktotal = eval(bktotal + "*" + 1.05);
+	bktotal = Math.ceil(bktotal);
+}
+
+function buy_carry(thing) {
+	if (thing == "track") {
+		if (mntotal < 30) {
+			alert("You can't buy this");
+		} else {
+		check = confirm('Are you sure?');
+			if (check == true) {
+				mntotal = eval(mntotal + "-" + 30);
+					mnbd.innerHTML = "<TT><B>$" + mntotal + "</TT></B>";
+				cabd.innerHTML = "<TT><B>" + "Track" + "</TT></B>";
+				ca_spd = 300;
+			}
+		}
+	}
+	else if (thing == "train") {
+		if (mntotal < 70) {
+			alert("You can't buy this");
+		} else { 
+		check = confirm('Are you sure?');
+			if (check == true) {
+				mntotal = eval(mntotal + "-" + 70);
+					mnbd.innerHTML = "<TT><B>$" + mntotal + "</TT></B>";
+				cabd.innerHTML = "<TT><B>" + "Train" + "</TT></B>";
+				ca_spd = 150;
+			}
+		}
+	}
+	else if (thing == "plain") {
+		if (mntotal < 200) {
+			alert("You can't buy this");
+		} else {
+		check = confirm('Are you sure?');
+			if (check == true) {
+				mntotal = eval(mntotal + "-" + 200);
+					mnbd.innerHTML = "<TT><B>$" + mntotal + "</TT></B>";
+				cabd.innerHTML = "<TT><B>" + "Plain" + "</TT></B>";
+				ca_spd = 1;
+			}
+		}
+	}
+}
+
+function bank() {
+	bkmoney = document.f1.bkmoney.value;
+	if (bkmoney == "") {document.f1.bkmoney.value = "";return true};
+	if (bkmoney == "show") {alert('Now you have $' + bktotal + ' in the bank');document.f1.bkmoney.value = "";return true};
+	if (bkmoney == "get") {get_money();return true};
+	if (eval(mntotal + "-" + bkmoney) < 0) {
+		alert('Not enough money');
+		document.f1.bkmoney.value = "";
+		return true;
+	}
+
+	bkbelt.innerHTML = "==";
+	bkbelt.style.pixelTop = bkbelt_y;
+	if (bkbelt_y < 42) {
+		bkbelt_y = 87;
+		bkbelt.innerHTML = "";
+		bkexcel("in");
+		return true;
+	}
+	bkbelt_y -= 5;
+	setTimeout('bank()',100);
+}
+
+function bkexcel(j) {
+	if (j == "in") {
+		bktotal = eval(bktotal + "+" + bkmoney);
+		mntotal = eval(mntotal + "-" + bkmoney);
+			mnbd.innerHTML = "<TT><B>$" + mntotal + "</TT></B>";
+		document.f1.bkmoney.value = "";
+	} else if (j == "out") {
+		bkbelt.innerHTML = "==";
+		bkbelt.style.pixelTop = bkbelt_x;
+		if (bkbelt_x > 87) {
+			bkbelt_x = 42;
+			bkbelt.innerHTML = "";
+			bktotal = eval(bktotal + "-" + get_price);
+			mntotal = eval(mntotal + "+" + get_price);
+				mnbd.innerHTML = "<TT><B>$" + mntotal + "</TT></B>";
+			document.f1.bkmoney.value = "";
+			clearTimeout(timer_bkbelt_x);
+			document.f1.bankcheck.checked = false;
+			return true;
+		}
+		bkbelt_x += 5;
+		timer_bkbelt_x = setTimeout('bkexcel("out")',100);
+	}
+}
+
+function get_money() {
+	get_price = prompt('Now you have $' + bktotal + ' in the bank.\nHow much do you want?','');
+	if (get_price == null) {document.f1.bkmoney.value = "";document.f1.bankcheck.checked = false;return true};
+	if (get_price =="") {document.f1.bkmoney.value = "";document.f1.bankcheck.checked = false;return true};
+	for (i=0;i<=get_price.length;i++) {
+		if ((get_price.charAt(i) == 1)||(get_price.charAt(i) == 2)
+			||(get_price.charAt(i) == 3)||(get_price.charAt(i) == 4)
+			||(get_price.charAt(i) == 5)||(get_price.charAt(i) == 6)
+			||(get_price.charAt(i) == 7)||(get_price.charAt(i) == 8)
+			||(get_price.charAt(i) == 9)||(get_price.charAt(i) == 0)) {
+			
+		} else {
+			alert('Invalid order');
+			document.f1.bkmoney.value = "";
+			document.f1.bankcheck.checked = false;
+			return true;
+		} 
+	}
+	if (eval(bktotal + "-" + get_price) < 0) {
+		alert("Don't cheet our bank...");
+		document.f1.bkmoney.value = "";
+		document.f1.bankcheck.checked = false;
+		return true;
+	}
+	
+	
+	bkexcel("out");
+	
+}
+
+function Clear() {
+	clearTimeout(timer_fac_rate);
+	clearTimeout(timer_cst_rate);
+	clearTimeout(timer_elec);
+	fcbelt_y = 200;
+	slbelt_y = 400;
+	artotal = 0;
+	mntotal = 101;
+	bktotal = 0;
+	get_price = 0;
+	prtotal = 2;
+	cutotal = 3;
+	rate_spd;
+	fc_spd = 500;
+	sl_spd = 500;
+	x = 0;
+	year = 1989;
+		yrbd.innerHTML = "<TT><B>Year: " + year + "</B></TT>";
+		arbd.innerHTML = "<TT><B>" + artotal + "</TT></B>";
+	fac_rate();
+	electric();
+	cst_rate();
+}
+
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY onLoad="fac_rate();electric();cst_rate();insert()">
+
+<DIV id="fac" style="position:absolute; top:100px; left:100px; width:100px; height:30px; background-color:pink">
+<CENTER><B>Factory</CENTER>
+</DIV>
+
+<DIV id="ply" style="position:absolute; top:100px; left:300px; width:100px; height:30px; background-color:gold">
+<CENTER><B>Player</CENTER>
+</DIV>
+
+<DIV id="cst" style="position:absolute; top:100px; left:500px; width:100px; height:30px; background-color:lightblue">
+<CENTER><B>Customer</CENTER>
+</DIV>
+
+<DIV id="bnk" style="position:absolute; top:20px; left:300px; width:100px; height:30px; background-color:blue">
+<CENTER><B>Bank</CENTER>
+</DIV>
+
+
+<SPAN id="fcbelt" style="position:absolute; top:105px; left:200px"></SPAN>
+<SPAN id="slbelt" style="position:absolute; top:105px; left:400px"></SPAN>
+<SPAN id="bkbelt" style="position:absolute; top:87px; left:344px"></SPAN>
+
+<DIV id="fac_bdtable" style="position:absolute; top:130px; left:100px;">
+<TABLE>
+<TR><TD><TT><B>Price:</B></TT></TD><TD><SPAN id="prbd"><TT><B>$2</TT></B></SPAN></TD></TR>
+</TABLE>
+</DIV>
+
+<DIV id="ply_bdtable" style="position:absolute; top:130px; left:300px;">
+<TABLE>
+<TR><TD><TT><B>Money:</B></TT></TD><TD><SPAN id="mnbd"><TT><B>$100</TT></B></SPAN></TD></TR>
+<TR><TD><TT><B>Article:</B></TT></TD><TD><SPAN id="arbd"><TT><B>0</TT></B></SPAN></TD></TR>
+<TR><TD><TT><B>Carry:</B></TT></TD><TD><SPAN id="cabd"><TT><B>Horse</TT></B></SPAN></TD></TR>
+</TABLE>
+</DIV>
+
+<DIV id="cst_bdtable" style="position:absolute; top:130px; left:500px;">
+<TABLE>
+<TR><TD><TT><B>Market:</B></TT></TD><TD><SPAN id="cubd"><TT><B>$3</TT></B></SPAN></TD></TR>
+<TR><TD><TT><B>Article:</B></TT></TD><TD><SPAN id="cu_arbd"><TT><B>0</TT></B></SPAN></TD></TR>
+</TABLE>
+</DIV>
+
+<DIV style="position:absolute; top:10px; left:10px;">
+<TABLE border="0">
+<TR><TD><SPAN id="yrbd"><TT><B>Year: 1990</B></TT></SPAN></TD></TR>
+<TR><TD><SPAN id="dtbd"></SPAN></TD></TR>
+
+</TABLE>
+</DIV>
+
+<DIV style="position:absolute; top:200px; left:500px;">
+<FORM name="f1">
+<TABLE border="0">
+<TR><TD><SPAN id="plyname"></SPAN></TD></TR>
+<TR><TD>
+<INPUT name="argoods" type="text" value="" size="8" maxlength="8">
+<INPUT type="button" value="  Buy  " onClick="buy()">
+</TD></TR>
+<TR><TD>
+<INPUT name="slgoods" type="text" value="" size="8" maxlength="8">
+<INPUT type="button" value="  Sell  " onClick="sell()">
+</TD></TR>
+<TR><TD>
+<INPUT name="bkmoney" type="text" value="" size="8" maxlength="8">
+<INPUT type="button" value="Bank " onClick="bank()">
+</TD></TR>
+<TR><TD>
+<INPUT type="radio" name="bankcheck" onClick="get_money()">
+<TT><B>Get money from bank</B></TT>
+</TD></TR>
+<TR><TD><TT><B>
+Track: $30- | <A href="javascript:buy_carry('track')">buy</A><BR>
+Train: $70- | <A href="javascript:buy_carry('train')">buy</A><BR>
+Plain:$200- | <A href="javascript:buy_carry('plain')">buy</A>
+</B></TT>
+</TD></TR>
+</TABLE>
+</FORM>
+</DIV>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<SCRIPT LANGUAGE="Javascript">
+<!--
+
+alph = "abcdefghijklmnopqrstuvwxyz"
+num = "0123456789"
+shift = false
+var data
+
+function CHK() {
+
+data = dis.innerHTML
+data = data.substring(0,data.length-1)
+dis.innerHTML = data
+
+k = window.event.keyCode
+if (k==20) {shift=!shift}
+
+
+	if ((k>=65)&&(k<=90)) {
+		if (shift==false) {dis.innerHTML += alph.charAt(k-65)}
+		if (shift==true) {dis.innerHTML += alph.charAt(k-65).toUpperCase()}
+	}
+	else if ((k>=48)&&(k<=57)) {
+		dis.innerHTML += num.charAt(k-48)
+	}
+	else if (k==32) {
+		dis.innerHTML += "&nbsp;";
+	} 
+	else if (k==13) {
+		dis.innerHTML += "<BR>"
+	}
+	else if (k==8) {
+		data = data.substring(0,data.length-1)
+		dis.innerHTML = data
+	}
+	
+data = dis.innerHTML
+dis.innerHTML = data.concat("_")
+}	
+
+
+
+document.onkeydown = CHK
+
+//-->
+</SCRIPT>
+
+</HEAD>
+<BODY bgcolor="#000000">
+
+
+<FONT color="#00FF00"><TT>
+<DIV id="dis" style="position:absolute" onClick="alert(dis.innerHTML)"></DIV>
+</TT></FONT>
+
+</BODY>
+</HTML>

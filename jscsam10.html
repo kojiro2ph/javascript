@@ -1,0 +1,152 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<SCRIPT LANGUAGE="Javascript">
+<!--
+
+ img = new Array();
+ img[0] = "<IMG src='images/kame.gif'>"
+ img[1] = "<IMG src='images/kame.gif'>"
+
+var x1 = 100;
+var x2 = 100;
+var y2 = 130;
+var flag = false;
+var offplay = true;
+var emyspeed = 150;
+var plystep = 5;
+
+function start_() {
+	if (offplay == true) {
+	flag = true;
+	offplay = false;
+	enemy.innerHTML = img[0];
+	player.innerHTML = img[1];
+	enemymove();
+	}
+}
+	
+function enemymove() {
+	if (flag == true) {
+	
+	enemy.style.left = x1 + 5;
+	x1 += 5
+	if (x1 > 150) {emyspeed = 100};
+	if (x1 > 200) {emyspeed = 50};
+	
+	if (x1 == 500) {alert('you lost');Clear();};
+	emyTID = setTimeout('enemymove()',emyspeed)
+	}
+}
+
+function playermove(myEvents) {
+	if (flag == true) {
+	player.style.left = x2 + plystep;
+	x2 += plystep;
+	
+	if ((x2 == 170 && y2 == 145)||(x2 == 320 && y2 == 145)||(x2 == 220 && y2 == 130)||(x2 == 420 && y2 == 130)) {gameover();};
+	if (x2 == 275 && y2 == 145) {bin.style.visibility = "hidden"};
+	if (x2 == 300 && y2 == 145) {plystep = 10};
+	if (x2 == 500) {alert('you win');Clear();};
+	}
+}
+
+function playerdown() {
+	if (flag == true) {
+	if (y2 == 130) {player.style.top = y2 + 15; y2 = 145;};
+	}
+}
+
+function playerup() {
+	if (flag == true) {
+	if (y2 == 145) {player.style.top = y2 - 15; y2 = 130};
+	}
+}
+
+function gameover() {
+	alert('Game over');
+	Clear();
+}
+
+function Clear() {
+	clearTimeout(emyTID);
+	offplay = true;
+	flag = false;
+	enemy.style.left = 100;
+	player.style.left = 100;
+	player.style.top = 130;
+	x1 = 100;
+	x2 = 100;
+	y2 = 130;
+	emyspeed = 100;
+	plystep = 5;
+	bin.style.visibility = "visible"
+}
+
+function Keycheck() {
+	k = window.event.keyCode
+	if (k==83){start_()}
+	if (k==190){playermove()}
+	if (k==65){playerdown()}
+	if (k==81){playerup()}
+}
+
+
+
+document.onkeydown = Keycheck
+	
+//-->
+</SCRIPT>
+</HEAD>
+<BODY>
+
+
+
+
+<SPAN id="enemy" style="position:absolute; top:100px; left:100px">
+</SPAN>
+
+<SPAN id="player" style="position:absolute; top:130px; left:100px">
+</SPAN>
+
+
+<DIV style="position:absolute; top:20px; left:30px">
+<FORM>
+<INPUT type="button" value="Start" onClick="start_()">
+<INPUT type="button" value="Go" onClick="playermove()">
+<INPUT type="button" value="Down" onClick="playerdown()">
+<INPUT type="button" value="Up" onClick="playerup()">
+
+<TT><B><BR>
+S = Start<BR>
+> = Go<BR>
+A = Down<BR>
+Q = Up
+</B></TT>
+</FORM>
+</DIV>
+
+<SPAN id="bin" style="position:absolute; top:140px; left:300px">
+<IMG src="images/bin.gif">
+</SPAN>
+
+<SPAN id="bomb" style="position:absolute; top:145px; left:200px">
+<IMG src="images/lightbutton.gif">
+</SPAN>
+<SPAN id="bomb" style="position:absolute; top:130px; left:250px">
+<IMG src="images/lightbutton.gif">
+</SPAN>
+<SPAN id="bomb" style="position:absolute; top:145px; left:350px">
+<IMG src="images/lightbutton.gif">
+</SPAN>
+<SPAN id="bomb" style="position:absolute; top:130px; left:450px">
+<IMG src="images/lightbutton.gif">
+</SPAN>
+
+<DIV style="position:absolute; top:100px; left:500px; width:2px; height:60px; background:black;">
+
+</DIV>
+
+
+</BODY>
+</HTML>

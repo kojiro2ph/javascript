@@ -1,0 +1,52 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<SCRIPT LANGUAGE="Javascript">
+<!--
+
+var screenx = 15;
+var screeny = 10;
+var count   = 0;
+
+function display() {
+	for ( y = 0; y <= screeny; y++) {
+		for ( x = 0; x <= screenx; x++) {
+			document.write('<IMG src="images/trans.gif" width="10" height="10" onMouseover="change(' + count + ')">')
+			count++
+			window.status = "initializing..." + count
+		}
+		document.write("<BR>")	
+	}
+}
+
+function change(n) {
+
+	document.images[n].src = "images/paint.gif"
+	
+	
+		
+		
+}
+
+
+
+
+
+
+//-->
+</SCRIPT>
+</HEAD>
+<BODY bgcolor="#000000">
+
+
+
+<SCRIPT LANGUAGE="Javascript">
+<!--
+	display();
+//-->
+</SCRIPT>
+
+
+
+</BODY>
+</HTML>

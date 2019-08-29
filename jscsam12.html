@@ -1,0 +1,199 @@
+<HTML>
+<HEAD>
+<TITLE></TITLE>
+<SCRIPT LANGUAGE="Javascript">
+<!--
+
+var rct_x = 65
+var rct_y = 50
+
+
+var msg_data = ""
+var msg_line = 0
+var msg_from = new Array('maincontrol>>','sub-control>>',
+			 'regional-@->>','xyz-ragical>>',
+			 'cos*sin*tan>>','pai^dec$int>>',
+			 'x-4927-wuco>>','z-9461-port>>',
+			 'earth-7052->>','saturn-1106>>',
+			 'abs-%&(^!}->>','sub record->>')
+var bd_select = 0
+var bd1_gg = 30
+var bd2_gg = 50
+var bd3_gg = 100
+var bd4_gg = 60
+var bd5_gg = 70
+
+
+
+var rct_flag = true
+
+////////////////////////////////////////////////////////
+//		    MAIN FUNCTION		      //
+////////////////////////////////////////////////////////
+
+function MAIN_F() {
+	if (rct_y <= 85) {rct_y+=2}
+	if (rct_x <= 330) {rct_x+=2}
+	rct.style.posTop = rct_y
+	rct.style.posLeft = rct_x
+	setTimeout('MAIN_F()',2000)
+
+}
+
+////////////////////////////////////////////////////////
+//		     SUB FUNCTION		      //
+////////////////////////////////////////////////////////
+
+function MSG() {
+	if (msg_line == 4) {msg_data = "";msg_line = 0}
+	m = Math.floor(Math.random()*12)
+	msg_data += msg_from[m] + " " + bd1_gg + " " + bd2_gg + " " + bd3_gg + " " + bd4_gg + " " + bd5_gg + " " + "<BR>"
+	msg.innerHTML = msg_data
+	msg_line++
+	setTimeout('MSG()',1000)
+}
+
+function NUM() {
+	z1 = Math.random()*2 + ""
+	z1 = z1.substring(2,z1.length)
+	z2 = Math.random()*2 + ""
+	z2 = z1.substring(2,z1.length)
+	xyz = z1+z2
+	xyz = xyz.substring(0,25)
+	num.innerHTML = xyz+xyz
+	setTimeout('NUM()',1)
+}
+
+function CHG_RCT() {
+	if (rct_flag == true) {
+	rct.style.visibility = "hidden"
+	rct_flag = !rct_flag
+	} else {
+	rct.style.visibility = "visible"
+	rct_flag = !rct_flag
+	}
+	
+	setTimeout('CHG_RCT()',50)
+}
+
+
+
+function CHG_BD() {
+	m1 = Math.floor(Math.random()*2)
+	if (m1 == 1) {bd1_gg++;bd1.style.width = bd1_gg;document.ctrl.mt1.value = bd1_gg;} 
+	else {if (bd1_gg <= 5){return};bd1_gg--;bd1.style.width = bd1_gg;document.ctrl.mt1.value = bd1_gg;}
+
+	m2 = Math.floor(Math.random()*2)
+	if (m2 == 1) {bd2_gg++;bd2.style.width = bd2_gg;document.ctrl.mt2.value = bd2_gg;} 
+	else {if (bd2_gg <= 5){return};bd2_gg--;bd2.style.width = bd2_gg;document.ctrl.mt2.value = bd2_gg;}
+
+	m3 = Math.floor(Math.random()*2)
+	if (m3 == 1) {bd3_gg++;bd3.style.width = bd3_gg;document.ctrl.mt3.value = bd3_gg;} 
+	else {if (bd3_gg <= 5){return};bd3_gg--;bd3.style.width = bd3_gg;document.ctrl.mt3.value = bd3_gg;}
+	
+	m4 = Math.floor(Math.random()*2)
+	if (m4 == 1) {bd4_gg++;bd4.style.width = bd4_gg;document.ctrl.mt4.value = bd4_gg;} 
+	else {if (bd4_gg <= 5){return};bd4_gg--;bd4.style.width = bd4_gg;document.ctrl.mt4.value = bd4_gg;}
+
+	m5 = Math.floor(Math.random()*2)
+	if (m5 == 1) {bd5_gg++;bd5.style.width = bd5_gg;document.ctrl.mt5.value = bd5_gg;} 
+	else {if (bd5_gg <= 5){return};bd5_gg--;bd5.style.width = bd5_gg;document.ctrl.mt5.value = bd5_gg;}
+
+	setTimeout('CHG_BD()',1)
+}
+
+function KEY_CHECK() {
+	k = window.event.keyCode
+	if (k == 65) {CHG_RCT()}
+}
+
+
+
+
+function XY() {
+	X = window.event.x-2
+	Y = window.event.y-2 
+	status = X + "," + Y
+
+	
+}
+
+
+
+document.onmousemove = XY
+document.onkeydown = KEY_CHECK
+
+//-->
+</SCRIPT>
+<!--
+
+	/////////////////////////////////////////////////////////////////////
+	//	  							   //
+	//		             BODY START          	 	   //
+	//								   //
+	/////////////////////////////////////////////////////////////////////
+
+-->
+</HEAD>
+<BODY scroll="no" bgcolor="#008080" onLoad="MSG();MAIN_F();NUM();CHG_BD()">
+
+<DIV id="bgspace" style="position:absolute;top:20;left:10">
+	<TABLE width="400" height="100" bgcolor="#000000" style="position:absolute;top:0;left:0;"><TD></TD></TABLE>
+	</DIV>
+
+<DIV id="rct" style="position:absolute;top:50;left:65">
+	<TABLE width="10" height="5" bgcolor="#FFFF00" style="position:absolute;top:0;left:0;"><TD></TD></TABLE>
+	</DIV>
+
+<DIV id="earth" style="position:absolute;top:50;left:50">
+	<TABLE width="10" height="14" bgcolor="#0000C0" style="position:absolute;top:-2;left:0;"><TD></TD></TABLE>
+	<TABLE width="14" height="10" bgcolor="#0000C0" style="position:absolute;top:0;left:-2;"><TD></TD></TABLE>
+	<TABLE width="10" height="10" bgcolor="#8080FF" style="position:absolute;top:0;left:0;"><TD></TD></TABLE>
+	</DIV>
+
+<DIV id="saturn" style="position:absolute;top:80;left:350">
+	<TABLE width="20" height="28" bgcolor="#808080" style="position:absolute;top:-4;left:0;"><TD></TD></TABLE>
+	<TABLE width="28" height="20" bgcolor="#808080" style="position:absolute;top:0;left:-4;"><TD></TD></TABLE>
+	<TABLE width="20" height="20" bgcolor="#C0C0C0" style="position:absolute;top:0;left:0;"><TD></TD></TABLE>
+	</DIV>
+
+
+<DIV id="main_ctrl" style="position:absolute;top:150;left:10">
+	<TABLE border="0">
+	<FORM name="ctrl">
+	<TR><TD><FONT face="Arial,Helvetica,Verdana" color="#FFFFFF">Main Fire</FONT></TD>
+	<TD><INPUT type="text" name="mt1" value="5" size="3" disabled></TD>
+	<TD><TABLE id="bd1" bgcolor="#FF0000" style="width:30;height:20"><TD></TD></TABLE></TD></TR>
+	<TR><TD><FONT face="Arial,Helvetica,Verdana" color="#FFFFFF">Sub Fire</FONT></TD>
+	<TD><INPUT type="text" name="mt2" value="5" size="3" disabled></TD>
+	<TD><TABLE id="bd2" bgcolor="#FF0000" style="width:50;height:20"><TD></TD></TABLE></TD></TR>
+	<TR><TD><FONT face="Arial,Helvetica,Verdana" color="#FFFFFF">Right</FONT></TD>
+	<TD><INPUT type="text" name="mt3" value="5" size="3" disabled></TD>
+	<TD><TABLE id="bd3" bgcolor="#FF0000" style="width:100;height:20"><TD></TD></TABLE></TD></TR>
+	<TR><TD><FONT face="Arial,Helvetica,Verdana" color="#FFFFFF">Left</FONT></TD>
+	<TD><INPUT type="text" name="mt4" value="5" size="3" disabled></TD>
+	<TD><TABLE id="bd4" bgcolor="#FF0000" style="width:60;height:20"><TD></TD></TABLE></TD></TR>
+	<TR><TD><FONT face="Arial,Helvetica,Verdana" color="#FFFFFF">Spare</FONT></TD>
+	<TD><INPUT type="text" name="mt5" value="5" size="3" disabled></TD>
+	<TD><TABLE id="bd5" bgcolor="#FF0000" style="width:70;height:20"><TD></TD></TABLE></TD></TR>
+	</FORM>
+	</TABLE>
+	</DIV>
+
+
+
+<FONT color="#00FF00"><TT>
+<DIV id="num" style="position:absolute;top:320;left:10;width:400;height:20;background-color='#000000'">
+</DIV>
+</TT></FONT>
+
+
+
+<FONT color="#00FF00"><TT>
+<DIV id="msg" style="position:absolute;top:350;left:10;width:400;height:70;background-color='#000000'">
+</DIV>
+</TT></FONT>
+
+
+</BODY>
+</HTML>
