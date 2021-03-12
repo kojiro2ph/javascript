@@ -1,0 +1,362 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<!--// 投げ銭 START //-->
+
+<script
+  src="https://code.jquery.com/jquery-3.5.0.min.js"
+  integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+  crossorigin="anonymous"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.14.2/matter.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js"></script>
+    
+<canvas id='cvs'></canvas>
+
+&nbsp;&nbsp; <button id="ngsen_voice_btn" onclick="ngsen_add_ball();" style="font-size: 24pt;">声銭を送る</button>
+
+<script>
+
+var NgSen = [];
+
+var W = document.body.offsetWidth;
+var H = 300;
+window.devicePixelRatio = 1;
+var cvs = document.getElementById('cvs');
+cvs.style.width=W;
+cvs.style.height=H;
+var ctx = cvs.getContext("2d");
+cvs.width= W;
+cvs.height= H;
+//ctx.scale(scale,scale);
+var DBG = false;
+
+
+var Engine = Matter.Engine;
+var Render = Matter.Render;
+var Runner = Matter.Runner;
+var Composites = Matter.Composites;
+var Common = Matter.Common;
+var MouseConstraint = Matter.MouseConstraint;
+var Mouse = Matter.Mouse;
+var World = Matter.World;
+var Bodies = Matter.Bodies;
+var Body = Matter.Body;
+
+// create engine
+var engine = Engine.create();
+//Engine.run(engine);
+
+var world = engine.world;
+
+var Wcolor = "#000000";
+
+var box = [];
+//box.push(new Box(50,H/2,20,20,"#FF0000",{isStatic: false}));
+var board = [];
+board.push(new Box(W/2,H-5,W,10,Wcolor,{isStatic: true}));
+board.push(new Box(W-5,H/2,10,H,Wcolor,{isStatic: true}));
+board.push(new Box(5,H/2,10,H,Wcolor,{isStatic: true}));
+board.push(new Box(W/2,5,W,10,Wcolor,{isStatic: true}));
+board.push(new Box(150,180,100,230,Wcolor,{isStatic: true}));
+var ball = [];
+//ball.push(new Ball(200,H/2,10,"#0000FF",{isStatic: false}));
+
+
+var cvsmouse = Mouse.create(cvs);
+var cvsMo = {
+	mouse : cvsmouse
+}
+var mCon = MouseConstraint.create(engine,cvsMo);
+World.add(world,mCon);
+
+
+Matter.Events.on(mCon, 'mousedown', function(event) {
+    console.log(event);
+    //console.log(event.source);
+    //console.log(event.source.body);
+    if(event.source.body != null) {
+        if("wav" in event.source.body) {
+            //console.log(event.source.body.wav);
+            var sound = new Howl({
+                src: event.source.body.wav
+            });
+            sound.play();
+        }
+    }
+});
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+function Box(x,y,w,h,col,opt) {
+	this.w = w;
+	this.h = h;
+	this.col = col;
+	if(opt == null) {
+		opt = {};
+	}
+	this.body = Matter.Bodies.rectangle(x,y,w,h,opt);
+	World.add(world, this.body);
+}
+
+Box.prototype.show = function() {
+	ctx.beginPath();
+	ctx.rect( this.body.position.x - (this.w / 2), this.body.position.y - (this.h / 2), this.w, this.h);
+	ctx.fillStyle = this.col;
+	ctx.fill();
+	if(DBG) {
+		ctx.fillText(String(Math.round(this.body.position.x)) + ", " + String(Math.round(this.body.position.y)), this.body.position.x - (this.w / 2),this.body.position.y - (this.h / 2));
+	}
+	ctx.closePath();
+}
+
+function Ball(x,y,r,col,opt) {
+	this.r = r;
+	this.col = col;
+	if(opt == null) {
+		opt = {};
+	}
+	this.body = Matter.Bodies.circle(x,y,this.r,opt);
+	World.add(world,this.body);
+}
+
+Ball.prototype.show = function() {
+	ctx.beginPath();
+	ctx.arc(this.body.position.x, this.body.position.y, this.r, 0, Math.PI*2, true);
+	ctx.fillStyle = this.col;
+	ctx.fill();
+	if(DBG) {
+		ctx.fillText(String(Math.round(this.body.position.x)) + ", " + String(Math.round(this.body.position.y)), this.body.position.x - (this.r),this.body.position.y - (this.r));
+	}
+	ctx.closePath();
+
+}
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+var animate = function () {
+	requestAnimationFrame( animate );
+	Engine.update(engine);
+
+	// canvas リセット ---
+	ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+	box.forEach(o => o.show());
+	board.forEach(o => o.show());
+	ball.forEach(o => o.show());
+
+
+};
+
+document.body.onkeypress = function KeyCheck(e) {
+	console.log(e.which);
+	if(e.which == 97) {
+		Body.applyForce( box[0].body, {x: box[0].body.position.x, y: box[0].body.position.y}, {x: 0, y: -0.01});
+	} else if(e.which == 46) {
+		Body.applyForce( box[0].body, {x: box[0].body.position.x, y: box[0].body.position.y}, {x: +0.004, y: 0});
+	} else if(e.which == 44) {
+		Body.applyForce( box[0].body, {x: box[0].body.position.x, y: box[0].body.position.y}, {x: -0.004, y: 0});
+	} else if(e.which == 98) {
+		box.push(new Box(50,H/2,20,20,"#" + Math.floor(Math.random() * 16777215).toString(16),{isStatic: false}));
+	} else if(e.which == 99) {
+		ball.push(new Ball(200,H/2,10,"#" + Math.floor(Math.random() * 16777215).toString(16),{isStatic: false}));
+	} else if(e.which == 100) {
+		DBG = !DBG;
+	}
+}
+
+
+
+animate();
+
+
+
+
+function ngsen_add_ball() {
+    recVOICE();
+}
+
+</script>
+
+
+<script>
+
+var audio_sample_rate = null;
+var scriptProcessor = null;
+var audioContext = null;
+var mediastreamsource = null;
+var lstream = null;
+var audioData = [];
+var bufferSize = 1024;
+
+// export WAV from audio float data
+let exportWAV = function (audioData) {
+    let encodeWAV = function (samples, sampleRate) {
+        let buffer = new ArrayBuffer(44 + samples.length * 2);
+        let view = new DataView(buffer);
+        let writeString = function (view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        };
+        let floatTo16BitPCM = function (output, offset, input) {
+            for (let i = 0; i < input.length; i++ , offset += 2) {
+                let s = Math.max(-1, Math.min(1, input[i]));
+                output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            }
+        };
+        writeString(view, 0, 'RIFF');  // RIFFヘッダ
+        view.setUint32(4, 32 + samples.length * 2, true); // これ以降のファイルサイズ
+        writeString(view, 8, 'WAVE'); // WAVEヘッダ
+        writeString(view, 12, 'fmt '); // fmtチャンク
+        view.setUint32(16, 16, true); // fmtチャンクのバイト数
+        view.setUint16(20, 1, true); // フォーマットID
+        view.setUint16(22, 1, true); // チャンネル数
+        view.setUint32(24, sampleRate, true); // サンプリングレート
+        view.setUint32(28, sampleRate * 2, true); // データ速度
+        view.setUint16(32, 2, true); // ブロックサイズ
+        view.setUint16(34, 16, true); // サンプルあたりのビット数
+        writeString(view, 36, 'data'); // dataチャンク
+        view.setUint32(40, samples.length * 2, true); // 波形データのバイト数
+        floatTo16BitPCM(view, 44, samples); // 波形データ
+        return view;
+    };
+    let mergeBuffers = function (audioData) {
+        let sampleLength = 0;
+        for (let i = 0; i < audioData.length; i++) {
+            sampleLength += audioData[i].length;
+        }
+        let samples = new Float32Array(sampleLength);
+        let sampleIdx = 0;
+        for (let i = 0; i < audioData.length; i++) {
+            for (let j = 0; j < audioData[i].length; j++) {
+                samples[sampleIdx] = audioData[i][j];
+                sampleIdx++;
+            }
+        }
+        return samples;
+    };
+    var dataview = encodeWAV(mergeBuffers(audioData), audio_sample_rate);
+    var audioBlob = new Blob([dataview], { type: 'audio/wav' });
+    var reader = new FileReader();
+    reader.readAsDataURL(audioBlob);
+
+    reader.onload = () => {
+        //alert(reader.result);
+        //var base64AudioMessage = reader.result.split(',')[1];
+        //document.getElementById('cbox').innerHTML = \"<audio controls autoplay><source type='audio/wav' src='data:audio/wav;base64,\" + base64AudioMessage + \"'></audio>\";
+        //xhr2.open('POST','https://d3avcu2s7x6wu3.cloudfront.net/idx.cgi');
+        //xhr2.send('act=p5&step=v&d=' + encodeURIComponent(reader.result) + '&f=$form{'f'}&cid=$Cid');
+        //console.log(encodeURIComponent(reader.result));
+        //console.log(reader.result);
+        //var ta = document.createElement("audio");
+        //ta.src = reader.result;
+        //ta.setAttribute("controls","");
+	    //document.body.appendChild(ta);
+        //ta.play();
+        //console.log("audio added!");
+
+
+        //audioElem = new Audio();
+        //audioElem.src = reader.result;
+        //audioElem.play();
+
+
+
+        //sound = new Howl({
+        //    src: reader.result
+        //});
+        //sound.play();
+
+        var b = new Ball(200,H/2,10,"#" + Math.floor(Math.random() * 16777215).toString(16),{isStatic: false, wav: reader.result });
+        console.log(b.body.id);
+        ball.push(b);
+        firebase.database().ref('ngsen/4844226183305/' + b.body.id.toString()).set({ wav: reader.result});
+    }
+
+};
+var onAudioProcess = function (e) {
+    var input = e.inputBuffer.getChannelData(0);
+    var bufferData = new Float32Array(bufferSize);
+    for (var i = 0; i < bufferSize; i++) {
+        bufferData[i] = input[i];
+    }
+    audioData.push(bufferData);
+};
+let handleSuccess = function (stream) {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioData = [];
+    audioContext = new AudioContext({leaveStreamOpen: true});
+    audio_sample_rate = audioContext.sampleRate;
+    scriptProcessor = audioContext.createScriptProcessor(bufferSize, 1, 1);
+    mediastreamsource = audioContext.createMediaStreamSource(stream);
+    mediastreamsource.connect(scriptProcessor);
+    scriptProcessor.onaudioprocess = onAudioProcess;
+    scriptProcessor.connect(audioContext.destination);
+};
+var RecF = false;
+function recVOICE() {
+    if(RecF == false) {
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(handleSuccess);
+        // $('#mic').attr('src','img/voice2.png');
+        $("#ngsen_voice_btn").html("録音中");
+        RecF = true;
+    } else {
+        audioContext.close().then(function () {
+            exportWAV(audioData);
+        });
+        // $('#mic').attr('src','img/voice.png');
+        $("#ngsen_voice_btn").html("声銭を送る");
+        RecF = false;
+    }
+}
+</script>
+
+<script>
+// Your web app's Firebase configuration
+var NgSen_firebaseConfig = {
+    apiKey: "AIzaSyBEjxdbKd_pnjBGo4zsrfauR_BytfZVEww",
+    authDomain: "kojiro2ph.firebaseapp.com",
+    databaseURL: "https://kojiro2ph.firebaseio.com",
+    projectId: "kojiro2ph",
+     storageBucket: "kojiro2ph.appspot.com",
+    messagingSenderId: "776120943992",
+    appId: "1:776120943992:web:08e438447af0db2abc748d"
+};
+// Initialize Firebase
+firebase.initializeApp(NgSen_firebaseConfig);
+
+var Nref = firebase.database().ref('ngsen/4844226183305');
+
+Nref.on("value",
+    function(s) {
+        //console.log(s);
+        s.forEach(function(d) {
+            var b = Matter.Composite.allBodies(this.engine.world);
+            var add_flag = true;
+            for(var i = 0; i < b.length; i++) {
+                if(b[i].id == d.key) {
+                    add_flag = false;
+                }
+            }
+            if(add_flag) {
+                console.log("add ball..." + d.key);
+                var w = d.val();
+                ball.push(new Ball(200,H/2,10,"#" + Math.floor(Math.random() * 16777215).toString(16),{isStatic: false, wav: w.wav }));
+            }
+        });
+    }, function(e) {
+    }
+);
+
+</script>
+
+
+<!--// 投げ銭 END //-->
