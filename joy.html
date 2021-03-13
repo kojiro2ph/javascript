@@ -1,0 +1,191 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+
+<script>
+var joy;
+var field;
+</script>
+
+<script>
+
+class JoyStick {
+
+	constructor(options) {
+		const circle = document.createElement("div");
+		circle.style.cssText = "position:absolute; bottom:35px; width:80px; height:80px; background:rgba(126, 126, 126, 0.5); border:#444 solid medium; border-radius:50%; left:50%; transform:translateX(-50%);";
+		const thumb = document.createElement("div");
+		thumb.style.cssText = "position: absolute; left: 20px; top: 20px; width: 40px; height: 40px; border-radius: 50%; background: #fff;";
+		circle.appendChild(thumb);
+		document.body.appendChild(circle);
+		this.domElement = thumb;
+		this.maxRadius = options.maxRadius || 40;
+		this.maxRadiusSquared = this.maxRadius * this.maxRadius;
+		this.onMove = options.onMove;
+		this.origin = { left:this.domElement.offsetLeft, top:this.domElement.offsetTop };
+		
+		if (this.domElement!=undefined) {
+			const joystick = this;
+			if ('ontouchstart' in window) {
+				this.domElement.addEventListener('touchstart', function(evt){ joystick.tap(evt); });
+			} else {
+				this.domElement.addEventListener('mousedown', function(evt){ joystick.tap(evt); });
+			}
+		}
+
+	}
+	
+	getMousePosition(evt) {
+		let clientX = evt.targetTouches ? evt.targetTouches[0].pageX : evt.clientX;
+		let clientY = evt.targetTouches ? evt.targetTouches[0].pageY : evt.clientY;
+		return { x:clientX, y:clientY };
+	}
+	
+	tap(evt) {
+		evt = evt || window.event;
+		// get the mouse cursor position at startup:
+		this.offset = this.getMousePosition(evt);
+		const joystick = this;
+		if ('ontouchstart' in window) {
+			document.ontouchmove = function(evt){ joystick.move(evt); };
+			document.ontouchend =  function(evt){ joystick.up(evt); };
+		}else {
+			document.onmousemove = function(evt){ joystick.move(evt); };
+			document.onmouseup = function(evt){ joystick.up(evt); };
+		}
+        evt.preventDefault();
+	}
+	
+	move(evt) {
+
+		evt = evt || window.event;
+		
+		const mouse = this.getMousePosition(evt);
+
+		// calculate the new cursor position:
+		let left = mouse.x - this.offset.x;
+		let top = mouse.y - this.offset.y;
+		
+		const sqMag = left*left + top*top;
+		if (sqMag>this.maxRadiusSquared) {
+			const magnitude = Math.sqrt(sqMag);
+			left /= magnitude;
+			top /= magnitude;
+			left *= this.maxRadius;
+			top *= this.maxRadius;
+		}
+
+		this.domElement.style.top = `${top + this.domElement.clientHeight/2}px`;
+		this.domElement.style.left = `${left + this.domElement.clientWidth/2}px`;
+		
+		const forward = -(top - this.origin.top + this.domElement.clientHeight/2)/this.maxRadius;
+		const turn = (left - this.origin.left + this.domElement.clientWidth/2)/this.maxRadius;
+		
+		if (this.onMove!=undefined) this.onMove.call(this.game, forward, turn);
+
+	}
+	
+	up(evt) {
+
+		if ('ontouchstart' in window) {
+			document.ontouchmove = null;
+			document.touchend = null;
+		} else {
+			document.onmousemove = null;
+			document.onmouseup = null;
+		}
+
+		this.domElement.style.top = `${this.origin.top}px`;
+		this.domElement.style.left = `${this.origin.left}px`;
+
+	}
+
+}
+
+function playerControl(forward, turn){
+
+	field.P.y -= forward;
+	if(field.P.y > field.Y) { field.P.y = field.Y; }
+	if(field.P.y < 0) { field.P.y = 0; }
+	field.P.x += turn;
+	if(field.P.x > field.X) { field.P.x = field.X; }
+	if(field.P.x < 0) { field.P.x = 0; }
+
+  turn = -turn;
+
+}
+
+$(document).ready(function(){
+    joy = new JoyStick({
+			    onMove: playerControl
+			});
+});
+
+</script>
+
+<script>
+
+class Field {
+
+	constructor(options) {
+		this.P = {};
+		this.X = options.X;
+		this.Y = options.Y;
+		this.zoom = options.zoom;
+		this.fld = document.createElement("div");
+		this.fld.style.width = options.X * this.zoom;
+		this.fld.style.height = options.Y * this.zoom;
+		this.fld.style.backgroundColor = "yellow";
+		document.body.appendChild(this.fld);
+		this.init();
+	}
+
+	init() {
+		console.log("start");
+		console.log(this.fld);
+		this.P.x = Math.floor(Math.random() * Math.floor(this.X));
+		this.P.y = Math.floor(Math.random() * Math.floor(this.Y));
+		console.log(this.P.x,this.P.y);
+		this.P.div = document.createElement("div");
+		this.P.div.style.width = 1 * this.zoom;
+		this.P.div.style.height = 1 * this.zoom;
+		this.P.div.style.position = "relative";
+		this.P.div.style.left = this.P.x * this.zoom;
+		this.P.div.style.top = this.P.y * this.zoom;
+		this.P.div.style.backgroundColor = "red";
+		this.fld.appendChild(this.P.div);
+	}
+
+	update() {
+		this.P.div.style.left = this.P.x * this.zoom;
+		this.P.div.style.top = this.P.y * this.zoom;
+	}
+
+ }
+
+$(document).ready(function() {
+
+  field = new Field({
+      X: 100,
+      Y: 100,
+      zoom: 3
+    });
+
+	(function loop() {
+    window.requestAnimationFrame(loop);
+		field.update();
+	})();
+
+});
+
+</script>
+</head>
+
+<body>
+</body>
+
+</html>
