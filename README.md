@@ -14,4 +14,10 @@ ngsen.html
 
 https://hamada-test.s3.us-east-2.amazonaws.com/ngsen.html
 
+joy.html
+
+https://hamada-test.s3.us-east-2.amazonaws.com/joy.html
+
 gl-test.html
+
+
